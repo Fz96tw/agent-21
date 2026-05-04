@@ -1,31 +1,39 @@
 #!/bin/bash
 
-# Simple Bash calculator script
-
-if [ $# -ne 3 ]; then
-  echo "Usage: $0 operand1 operator operand2"
-  exit 1
+if [ "$#" -ne 3 ]; then
+    echo "Usage: ./calculator.sh number1 operator number2"
+    exit 1
 fi
 
-operand1=$1
+num1=$1
 operator=$2
-operand2=$3
+num2=$3
 
-case $operator in
-  +)
-    result=$((operand1 + operand2))
-    ;;  
-  -)
-    result=$((operand1 - operand2))
-    ;;  
-  *)
-    if [ "$operand2" -eq 0 ]; then
-      echo "Error: Division by zero"
-      exit 1
-    fi
-    result=$((operand1 / operand2))
-    ;;  
- esac
+result=""
 
-# Print the result
-echo "Result: $result"
+case "$operator" in
+    +)
+        result=$(echo "$num1 + $num2" | bc -l)
+        ;;  
+    -)
+        result=$(echo "$num1 - $num2" | bc -l)
+        ;;  
+    \*)
+        result=$(echo "$num1 * $num2" | bc -l)
+        ;;  
+    /)
+        if [ "$num2" == "0" ]; then
+            echo "Error: Division by zero"
+            exit 1
+        fi
+        result=$(echo "$num1 / $num2" | bc -l)
+        ;;  
+    *)
+        echo "Error: Invalid operator"
+        exit 1
+        ;;  
+esac
+
+echo "$num1 $operator $num2 = $result"
+
+echo "$num1 $operator $num2 = $result" >> history.txt
